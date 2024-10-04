@@ -1,13 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { Product } from '../classes/classes';
-import { Request, Response } from 'express';
+import { createProductService, getProductsService } from '../services/productServices';
 import { createProductValidate } from '../helper/zod';
 import formatZodError from '../helper/formatZodError';
 
 const prisma = new PrismaClient();
 
 export const getProducts = async (req: any, res: any) => {
-    const products = await prisma.produto.findMany();
+    const products = await getProductsService();
     res.status(200).json(products);
 }
 
@@ -19,6 +19,6 @@ export const createProduct = async (req: any, res: any) => {
     }
     const product:Product = bodyValidation.data;
 
-    const created = await prisma.produto.create({data: product});
-    res.status(201).json("Produto criado com sucesso!");
+    const produtoCriado = await createProductService(product);
+    res.status(200).json({message: "Produto criado!", data: product});
 }
